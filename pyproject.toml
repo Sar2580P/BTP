@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "vibration-analysis-btp"
+version = "0.1.0"
+description = "The project is for analysing vibration effect on various mechanical components. Predicting when failure could occur."
+authors = ["Sar2580P <sporwal1818@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+plotly = "^5.23.0"
+polars = "^1.4.1"
+requests = "^2.32.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
