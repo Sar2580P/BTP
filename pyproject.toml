@@ -10,7 +10,14 @@ python = "^3.10"
 plotly = "^5.23.0"
 polars = "^1.4.1"
 requests = "^2.32.3"
+pandas = "^2.2.2"
+fastparquet = "^2024.5.0"
+pyarrow = "^17.0.0"
+nbformat = "^5.10.4"
 
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]
