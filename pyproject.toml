@@ -15,6 +15,13 @@ fastparquet = "^2024.5.0"
 pyarrow = "^17.0.0"
 nbformat = "^5.10.4"
 tqdm = "^4.66.5"
+statsmodels = "^0.14.2"
+dask = "^2024.8.2"
+distributed = "^2024.8.2"
+pydantic = "^2.9.2"
+matplotlib = "^3.9.2"
+torch = "^2.5.1"
+pytorch-lightning = "^2.4.0"
 
 
 [tool.poetry.group.dev.dependencies]

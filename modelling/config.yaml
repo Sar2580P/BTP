@@ -1,0 +1,13 @@
+save_dir : "results"
+stage_1 : 
+  SDA_params : 
+    mask_fraction : 0.2
+    input_dim : 1280
+    hidden_dims : 
+      - 800
+      - 400
+      - 100
+
+    BATCH_SIZE : 128
+    loss_fn : "SDA_squared_error"
+    learning_rate : 0.001

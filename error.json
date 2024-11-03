@@ -1,0 +1,2 @@
+2024-11-03 16:55:37,522 Error processing file data/ieee-RUL/Full_Test_Set/Bearing1_3/acc_00676.csv: Error tokenizing data. C error: Calling read(nbytes) on source failed. Try engine='python'.
+{"error": "Error processing file data/ieee-RUL/Full_Test_Set/Bearing1_3/acc_00676.csv: Error tokenizing data. C error: Calling read(nbytes) on source failed. Try engine='python'."}
