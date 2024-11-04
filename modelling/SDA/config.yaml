@@ -1,0 +1,30 @@
+save_dir : "results"
+
+SDA_params : 
+  mask_fraction : 0.2
+  input_dim : 1280
+  hidden_dims : 
+    - 800
+    - 400
+    - 100
+
+BATCH_SIZE : 128
+loss_fn : "SDA_squared_error"
+lr : 0.001
+weight_decay : 0.0001
+MAX_EPOCHS : 40
+GRAD_ACCUMULATION_STEPS : 2
+ckpt_file_name : '{epoch}-{val_loss:.2f}-{val_accuracy:.2f}'
+
+# CALLBACK related config
+callbacks:
+  ModelCheckpoint:
+    monitor: 'SDA_squared_error'
+    mode: 'min'
+    save_top_k: 1
+    save_last: True
+  EarlyStopping:
+    monitor: 'SDA_squared_error'
+    mode: 'min'
+    min_delta : 0.00005
+    patience : 8
