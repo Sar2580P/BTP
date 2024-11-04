@@ -3,7 +3,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint, RichProgressBar, RichMo
 from  pytorch_lightning.callbacks.progress.rich_progress import RichProgressBarTheme
 from utils import read_yaml
 
-callback_configs = read_yaml('configs.yaml')['callbacks']
+callback_configs = read_yaml('modelling/SDA/config.yaml')['callbacks']
 
 early_stop_callback = EarlyStopping(
    monitor=callback_configs['EarlyStopping']['monitor'],

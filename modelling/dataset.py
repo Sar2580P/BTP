@@ -1,6 +1,6 @@
 import glob
 import pandas as pd
-import torch.utils.data as DataSet
+from torch.utils.data import Dataset
 import numpy as np
 import torch
 import os
@@ -19,13 +19,14 @@ def get_data_mapping():
 
     print("Data mapping created successfully")
 
-class SDA_Dataset(DataSet):
+class SDA_Dataset(Dataset):
     def __init__(self, df):
         self.df = df
     def __len__(self):
         return len(self.df)
     def __getitem__(self, idx):
-        return torch.tensor(np.load(self.df.iloc[idx]["full_fft_path"]))
+        x =  torch.tensor(np.load(self.df.iloc[idx]["full_fft_path"]), dtype=torch.float32)
+        return x
 
 
 if __name__ == "__main__":

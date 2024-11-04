@@ -1,0 +1,55 @@
+/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:654: Checkpoint directory results/ckpts exists and is not empty.
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+┏━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┓
+┃[1;35m [0m[1;35m [0m[1;35m [0m┃[1;35m [0m[1;35mName            [0m[1;35m [0m┃[1;35m [0m[1;35mType           [0m[1;35m [0m┃[1;35m [0m[1;35mParams[0m[1;35m [0m┃[1;35m [0m[1;35mMode [0m[1;35m [0m┃
+┡━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━┩
+│[2m [0m[2m0[0m[2m [0m│ model            │ SDA_Initialiser │  641 K │ train │
+│[2m [0m[2m1[0m[2m [0m│ model.encoder    │ Linear          │  320 K │ train │
+│[2m [0m[2m2[0m[2m [0m│ model.decoder    │ Linear          │  320 K │ train │
+│[2m [0m[2m3[0m[2m [0m│ model.activation │ PReLU           │      1 │ train │
+│[2m [0m[2m4[0m[2m [0m│ criterion        │ MSELoss         │      0 │ train │
+└───┴──────────────────┴─────────────────┴────────┴───────┘
+[1mTrainable params[0m: 641 K
+[1mNon-trainable params[0m: 0
+[1mTotal params[0m: 641 K
+[1mTotal estimated model params size (MB)[0m: 2
+[1mModules in train mode[0m: 5
+[1mModules in eval mode[0m: 0
+[2K5l
+[?25h
+Traceback (most recent call last):
+  File "/home/bala/Desktop/sri_krishna/BTP/modelling/SDA/trainer.py", line 32, in <module>
+    trainer.fit(model=training_setup  , train_dataloaders=sda_tr_loader,
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 538, in fit
+    call._call_and_handle_interrupt(
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 47, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 574, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 981, in _run
+    results = self._run_stage()
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1023, in _run_stage
+    self._run_sanity_check()
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1052, in _run_sanity_check
+    val_loop.run()
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 178, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 135, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 396, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_args)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 319, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/pytorch_lightning/strategies/strategy.py", line 411, in validation_step
+    return self.lightning_module.validation_step(*args, **kwargs)
+  File "/home/bala/Desktop/sri_krishna/BTP/modelling/train_eval.py", line 27, in validation_step
+    y_hat = self.model.forward(x)
+  File "/home/bala/Desktop/sri_krishna/BTP/modelling/models.py", line 57, in forward
+    y = self.encoder(x_masked)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (128x1280 and 800x400)
