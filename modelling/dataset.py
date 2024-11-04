@@ -1,5 +1,5 @@
 import glob
-import pandas as pd 
+import pandas as pd
 import torch.utils.data as DataSet
 import numpy as np
 import torch
@@ -18,7 +18,7 @@ def get_data_mapping():
         df.to_csv(f"{BASE_DIR}/{dataset}.csv", index=False)
 
     print("Data mapping created successfully")
-    
+
 class SDA_Dataset(DataSet):
     def __init__(self, df):
         self.df = df
@@ -26,8 +26,8 @@ class SDA_Dataset(DataSet):
         return len(self.df)
     def __getitem__(self, idx):
         return torch.tensor(np.load(self.df.iloc[idx]["full_fft_path"]))
-    
-    
+
+
 if __name__ == "__main__":
     if not os.path.exists("data/ieee-RUL/Full_Test_Set.csv"):
         get_data_mapping()
