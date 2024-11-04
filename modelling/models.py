@@ -7,9 +7,10 @@ class SDA_Initialiser(nn.Module):
     def __init__(self, config):
         super(SDA_Initialiser, self).__init__()
         # [1280, 800, 400, 100]
-        self.config = config['stage_1']['SDA_params']
+        self.config = config
         self.base_model, self.encoder, self.decoder = self.get_model()
         self.save_ckpt_path = None
+        self.name = "SDA_init"
         self.activation = nn.PReLU() 
         
     def check_file_exists(self, file_pattern):
@@ -17,7 +18,7 @@ class SDA_Initialiser(nn.Module):
         
     def get_model(self):
         layers = nn.ModuleList()
-        ckpt_pattern = f"{self.config["save_dir"]}/stage_1/SDA_init_{self.config['input_dim']}"
+        ckpt_pattern = f"{self.config["save_dir"]}/SDA_init_{self.config['input_dim']}"
         last_idx = -1 ; 
         for i, hidden_dims in enumerate(self.config['hidden_dims']):
             if not self.check_file_exists(f"{ckpt_pattern}_{hidden_dims}*"):
