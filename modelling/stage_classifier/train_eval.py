@@ -19,13 +19,13 @@ class StackedDenoisingAutoEncoder(pl.LightningModule):
         self.val_accuracy = torchmetrics.Accuracy(task = 'multiclass' , num_classes = self.config['Stage_classifier']['num_classes'])
         self.tst_accuracy = torchmetrics.Accuracy(task = 'multiclass' , num_classes = self.config['Stage_classifier']['num_classes'])
         self.criterion = nn.CrossEntropyLoss()
-        
+
         self.y_hat, self.y_true = [], []
 
     def training_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model.forward(x)
-        loss = self.criterion(y_hat, y)
+        loss = self.criterion(y_hat, y.long())
         self.log(f"train_CE_loss", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
         self.log(f"train_kappa", self.tr_kappa(y_hat, y), on_epoch=True, on_step=False,prog_bar=True, logger=True)
         self.log(f"train_accuracy", self.tr_accuracy(y_hat, y), on_epoch=True, on_step=False,prog_bar=True, logger=True)
@@ -34,7 +34,7 @@ class StackedDenoisingAutoEncoder(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.model.forward(x)
-        loss = self.criterion(y_hat, y)
+        loss = self.criterion(y_hat, y.long())
         self.log(f"val_CE_loss", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
         self.log(f"val_kappa", self.val_kappa(y_hat, y), on_epoch=True, on_step=False,prog_bar=True, logger=True)
         self.log(f"val_accuracy", self.val_accuracy(y_hat, y), on_epoch=True, on_step=False,prog_bar=True, logger=True)
@@ -44,7 +44,7 @@ class StackedDenoisingAutoEncoder(pl.LightningModule):
         x, y = batch
         y_hat = self.model.forward(x)
         self.y_hat.append(y_hat)
-        self.y_true.append(y)  
+        self.y_true.append(y.long())
 
         loss = self.criterion(y_hat, y)
         self.log(f"test_CE_loss", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
@@ -60,7 +60,7 @@ def find_optimal_stage_classes():
     BASE_DIR = "results/evaluations"
     pattern = "Stage_classifier_numClasses-"
     files = glob.glob(f"{BASE_DIR}/{pattern}*.pkl")
-    
+
     for file in files:
         with open(file, 'r') as f:
             y_hat = pickle.load(f)

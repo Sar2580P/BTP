@@ -1,0 +1,27 @@
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Current SDK version is 0.18.5
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Configure stats pid to 508269
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Loading settings from /home/bala/.config/wandb/settings
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Loading settings from /home/bala/Desktop/sri_krishna/BTP/wandb/settings
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Loading settings from environment variables: {}
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Applying setup settings: {'mode': None, '_disable_service': None}
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Inferring run settings from compute environment: {'program_relpath': 'modelling/stage_classifier/trainer.py', 'program_abspath': '/home/bala/Desktop/sri_krishna/BTP/modelling/stage_classifier/trainer.py', 'program': '/home/bala/Desktop/sri_krishna/BTP/modelling/stage_classifier/trainer.py'}
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-11-05 17:39:03,167 INFO    MainThread:508269 [wandb_init.py:_log_setup():534] Logging user logs to ./wandb/run-20241105_173903-4cg0pwfm/logs/debug.log
+2024-11-05 17:39:03,168 INFO    MainThread:508269 [wandb_init.py:_log_setup():535] Logging internal logs to ./wandb/run-20241105_173903-4cg0pwfm/logs/debug-internal.log
+2024-11-05 17:39:03,168 INFO    MainThread:508269 [wandb_init.py:init():621] calling init triggers
+2024-11-05 17:39:03,168 INFO    MainThread:508269 [wandb_init.py:init():628] wandb.init called with sweep_config: {}
+config: {}
+2024-11-05 17:39:03,168 INFO    MainThread:508269 [wandb_init.py:init():671] starting backend
+2024-11-05 17:39:03,168 INFO    MainThread:508269 [wandb_init.py:init():675] sending inform_init request
+2024-11-05 17:39:03,170 INFO    MainThread:508269 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-11-05 17:39:03,171 INFO    MainThread:508269 [wandb_init.py:init():688] backend started and connected
+2024-11-05 17:39:03,173 INFO    MainThread:508269 [wandb_init.py:init():783] updated telemetry
+2024-11-05 17:39:03,181 INFO    MainThread:508269 [wandb_init.py:init():816] communicating run to backend with 90.0 second timeout
+2024-11-05 17:39:04,133 INFO    MainThread:508269 [wandb_init.py:init():867] starting run threads in backend
+2024-11-05 17:39:04,238 INFO    MainThread:508269 [wandb_run.py:_console_start():2463] atexit reg
+2024-11-05 17:39:04,238 INFO    MainThread:508269 [wandb_run.py:_redirect():2311] redirect: wrap_raw
+2024-11-05 17:39:04,238 INFO    MainThread:508269 [wandb_run.py:_redirect():2376] Wrapping output streams.
+2024-11-05 17:39:04,238 INFO    MainThread:508269 [wandb_run.py:_redirect():2401] Redirects installed.
+2024-11-05 17:39:04,239 INFO    MainThread:508269 [wandb_init.py:init():911] run started, returning control to user process
+2024-11-05 17:39:04,260 INFO    MainThread:508269 [wandb_run.py:_config_callback():1390] config_cb None None {'config': {'save_dir': 'results', 'Stage_classifier': {'input_dim': 1280, 'num_classes': 4, 'dropout': 0.2, 'hidden_dims': [800, 400, 100]}, 'BATCH_SIZE': 128, 'lr': 1e-05, 'weight_decay': 0.0001, 'MAX_EPOCHS': 20, 'GRAD_ACCUMULATION_STEPS': 2, 'num_workers': 8, 'ckpt_file_name': '{epoch}-{val_CE_loss:.2f}-{val_accuracy:.2f}', 'callbacks': {'ModelCheckpoint': {'monitor': 'val_CE_loss', 'mode': 'min', 'save_top_k': 1, 'save_last': True}, 'EarlyStopping': {'monitor': 'val_CE_loss', 'mode': 'min', 'min_delta': 5e-05, 'patience': 8}}}}
+2024-11-05 17:39:04,993 WARNING MsgRouterThr:508269 [router.py:message_loop():77] message_loop has been closed

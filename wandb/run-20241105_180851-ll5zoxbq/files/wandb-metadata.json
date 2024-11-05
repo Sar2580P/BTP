@@ -1,0 +1,43 @@
+{
+  "os":  "Linux-6.8.0-48-generic-x86_64-with-glibc2.35",
+  "python":  "3.10.12",
+  "startedAt":  "2024-11-05T12:38:51.044894Z",
+  "program":  "/home/bala/Desktop/sri_krishna/BTP/modelling/stage_classifier/trainer.py",
+  "codePath":  "modelling/stage_classifier/trainer.py",
+  "git":  {
+    "remote":  "https://github.com/Sar2580P/BTP.git",
+    "commit":  "b2df03d2fd9e6ad069eb06004b57024c03f789ee"
+  },
+  "email":  "sporwal1818@gmail.com",
+  "root":  ".",
+  "host":  "bala-DIT400TR-55RL",
+  "username":  "bala",
+  "executable":  "/home/bala/.cache/pypoetry/virtualenvs/vibration-analysis-btp-VfF25ca8-py3.10/bin/python",
+  "codePathLocal":  "modelling/stage_classifier/trainer.py",
+  "cpu_count":  48,
+  "cpu_count_logical":  96,
+  "gpu":  "NVIDIA RTX A5000",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "3936289308672",
+      "used":  "3433818210304"
+    }
+  },
+  "memory":  {
+    "total":  "270051119104"
+  },
+  "cpu":  {
+    "count":  48,
+    "countLogical":  96
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA RTX A5000",
+      "memoryTotal":  "25757220864",
+      "cudaCores":  8192,
+      "architecture":  "Ampere"
+    }
+  ],
+  "cudaVersion":  "12.5"
+}

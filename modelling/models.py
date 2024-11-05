@@ -72,7 +72,7 @@ class SDA_Initialiser(nn.Module):
             y_hat = self.decoder(z)
             return y , y_hat
         return y, y
-    
+
 class Stage_Classifier(nn.Module):
     def __init__(self, config):
         super(Stage_Classifier, self).__init__()
@@ -80,10 +80,10 @@ class Stage_Classifier(nn.Module):
         self.config = config
         self.name = "Stage_classifier"
         self.model = self.get_model()
-        
+
     def get_model(self):
         layers = nn.ModuleList()
-        ckpt_pattern = f"SDA_init_{self.config['SDA_params']['input_dim']}"
+        ckpt_pattern = f"SDA_init_{self.config['Stage_classifier']['input_dim']}"
         for i, hidden_dims in enumerate(self.config['Stage_classifier']['hidden_dims']):
             if i==0:
                 layers.append(nn.Linear(self.config['Stage_classifier']['input_dim'], hidden_dims))
@@ -92,37 +92,37 @@ class Stage_Classifier(nn.Module):
             ckpt_pattern += f"_{hidden_dims}"
         layers.append(nn.Linear(self.config['Stage_classifier']['hidden_dims'][-1], self.config['Stage_classifier']['num_classes']))
 
-        ckpt_path = glob.glob(os.path.join(f"{self.config['save_dir']}/ckpt", f"ckpts/{ckpt_pattern}*.ckpt"))
+        ckpt_path = glob.glob(os.path.join(f"{self.config['save_dir']}/ckpts", f"{ckpt_pattern}*.ckpt"))
         assert len(ckpt_path)>0, f"Checkpoint file not found for {ckpt_pattern}"
         self.initialise_model(layers, ckpt_path[0])
-        
+
         # Now add additional layers for robustness
         full_layers = nn.ModuleList()
-        for i, layer in enumerate(layers[:-1]):  # Skip final layer initially
+        for i, (layer, dim) in enumerate(zip(layers[:-1], self.config['Stage_classifier']['hidden_dims'])):  # Skip final layer initially
             full_layers.append(layer)
-            
+
             # Add BatchNorm, Activation, and Dropout (if specified) after each linear layer
-            full_layers.append(nn.BatchNorm1d(hidden_dims[i]))   # Batch normalization
+            full_layers.append(nn.BatchNorm1d(dim))   # Batch normalization
             full_layers.append(nn.ReLU())                        # Activation layer
             if 'dropout' in self.config['Stage_classifier'] and self.config['Stage_classifier']['dropout'] > 0:
                 full_layers.append(nn.Dropout(self.config['Stage_classifier']['dropout']))  # Dropout if specified
-        
+
         # Finally, add the output layer
         full_layers.append(layers[-1])
         return nn.Sequential(*full_layers)
-        
-        
-    
+
+
+
     def initialise_model(self, layers, ckpt):
         state = torch.load(ckpt)
         prev_encoder_weights = {k.replace('model.encoder.', ''): v for k, v in state['state_dict'].items() if 'model.encoder.' in k}
-        layers[-1].load_state_dict(prev_encoder_weights)
-        for i, layer in enumerate(layers[:-1]):
+        layers[-2].load_state_dict(prev_encoder_weights)
+        for i, layer in enumerate(layers[:-2]):
             base_model_weights = {k.replace(f'model.base_model.{i}.', ''): v for k, v in state['state_dict'].items() \
                                   if f'model.base_model.{i}' in k}
             layer.load_state_dict(base_model_weights)
-        return 
-    
+        return
+
     def forward(self, x: torch.Tensor):
         return self.model(x)
 
