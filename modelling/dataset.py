@@ -27,6 +27,22 @@ class SDA_Dataset(Dataset):
     def __getitem__(self, idx):
         x =  torch.tensor(np.load(self.df.iloc[idx]["full_fft_path"]), dtype=torch.float32)
         return x
+    
+class Stage_Classifier_Dataset(Dataset):
+    def __init__(self, df, config):
+        self.df = df
+        self.config = config
+        assert 1<self.config['Stage_classifier']['num_classes']>8 , f"num_classes should lie [2,7] , but got {self.config['Stage_classifier']['num_classes']}"
+        Y = self.df[f"stage_{self.config['Stage_classifier']['num_classes']}"]
+        
+    def __len__(self):
+        return len(self.df)
+    
+    def __getitem__(self, idx):
+        full_path = os.path.join(self.df.iloc[idx]['dir'], self.df.iloc[idx]["file_name"]+'.npy')
+        x =  torch.tensor(np.load(full_path), dtype=torch.float32)
+        y = torch.tensor(self.Y.iloc[idx], dtype=torch.int8)
+        return x, y
 
 
 if __name__ == "__main__":
