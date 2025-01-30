@@ -1,5 +1,5 @@
-from modelling.dataloaders import (stage_classifier_tr_loader as tr_loader, 
-                                   stage_classifier_val_loader as val_loader, 
+from modelling.dataloaders import (stage_classifier_tr_loader as tr_loader,
+                                   stage_classifier_val_loader as val_loader,
                                    stage_classifier_test_loader as test_loader)
 from modelling.models import Stage_Classifier
 from modelling.stage_classifier.train_eval import StackedDenoisingAutoEncoder
@@ -10,7 +10,7 @@ from modelling.callbacks import (early_stop_callback, checkpoint_callback,
                                 rich_progress_bar, rich_model_summary)
 from utils import read_yaml
 import torch
-import pickle 
+import pickle
 
 torch.set_float32_matmul_precision('high')  # 'medium' | 'high'
 config = read_yaml('modelling/stage_classifier/config.yaml')
@@ -23,7 +23,7 @@ checkpoint_callback.dirpath = os.path.join(config['save_dir'], 'ckpts')
 checkpoint_callback.filename = pattern + f"_{config['ckpt_file_name']}"
 
 run_name = f"lr-{config['lr']}__bs-{config['BATCH_SIZE']}__decay-{config['weight_decay']}"
-wandb_logger = WandbLogger(project= f"{model.name}", name=config['Stage_classifier']['num_classes'])
+wandb_logger = WandbLogger(project= f"{model.name}", name=pattern)
 csv_logger = CSVLogger(config['save_dir']+'/logs/'+  pattern)
 
 #_____________________________________________________________________________________________________________
@@ -36,7 +36,10 @@ trainer.fit(model=training_setup  , train_dataloaders=tr_loader,
             val_dataloaders=val_loader)
 trainer.test(dataloaders=test_loader)
 
-with open(f"{config['save_dir']}/evaluations/{pattern}.pkl", 'w') as f:
+evaluations_dir = f"{config['save_dir']}/evaluations/"
+os.makedirs(evaluations_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+# Now you can safely open the file for writing
+with open(f"{evaluations_dir}/{pattern}.pkl", 'wb') as f:  # Use 'wb' for binary mode
     pickle.dump(training_setup.y_hat, f)
     pickle.dump(training_setup.y_true, f)
-        

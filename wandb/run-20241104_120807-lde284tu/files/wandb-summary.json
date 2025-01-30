@@ -1,1 +1,0 @@
-{"trainer/global_step":600,"epoch":20,"val_SDA_squared_error":57.1839714050293,"test_SDA_squared_error":436.32415771484375,"_timestamp":1.7307023228773026e+09,"_wandb":{"runtime":35},"train_SDA_squared_error":124.28856658935547,"_runtime":35.072225908,"_step":40}
