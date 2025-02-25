@@ -18,10 +18,8 @@ class CSVProcessor(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        if not os.path.exists(self.save_dir):
-            os.makedirs(self.save_dir)
-        if not os.path.exists(self.save_plot):
-            os.makedirs(self.save_plot)
+        os.makedirs(self.save_dir, exist_ok=True)
+        os.makedirs(self.save_plot,exist_ok=True)
         self.setup_logging()
 
     def setup_logging(self):
@@ -74,7 +72,8 @@ class CSVProcessor(BaseModel):
                     raise ValueError(f"Skipping file {csv_file} due to insufficient columns")
                 
                 # df = self.correct_header(df)
-                fft_result = self.calculate_fft(df.iloc[:, 4].values, idx, csv_file)
+                fft_result = np.array([self.calculate_fft(df.iloc[:, 4].values, idx, csv_file), 
+                              self.calculate_fft(df.iloc[:, 5].values, idx, csv_file)])
                 base_name = os.path.basename(csv_file)
                 npy_file = os.path.join(self.save_dir, base_name.replace('.csv', '.npy'))
                 np.save(npy_file, fft_result)
