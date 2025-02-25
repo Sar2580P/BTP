@@ -1,0 +1,24 @@
+method : 'bayes'
+name : 'RepresentationLearning_sweep'
+metric :
+  goal : 'minimize'
+  name : 'val_HuberLoss'
+
+parameters :
+    BATCH_SIZE : 
+      values : [16, 32, 48]
+    denoisingAE_lr :
+      min: 1e-5
+      max: 5e-4
+    sparseAE_lr : 
+      min: 1e-5
+      max: 5e-4
+    activation_name : 
+      values : ["relu", "leaky_relu", "prelu"]
+    loss_fn : 
+      values: ['MSELoss', 'HuberLoss']
+    weight_decay : 
+      min : 1e-7
+      max : 1e-5
+    GRAD_ACCUMULATION_STEPS : 
+      values : [1, 2]

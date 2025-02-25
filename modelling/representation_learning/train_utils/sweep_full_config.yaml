@@ -1,0 +1,118 @@
+DenoisingSparseAE_params:
+  denoisingAE_params: ${denoisingAE_params}
+  sensor_id: ${sensor_id}
+  sparseAE_params: ${sparseAE_params}
+callback_params:
+  EarlyStopping:
+    min_delta: 5.0e-05
+    mode: min
+    monitor: val_HuberLoss
+    patience: 8
+  ModelCheckpoint:
+    mode: min
+    monitor: val_HuberLoss
+    save_last: true
+    save_top_k: 1
+dataset_params:
+  BATCH_SIZE: ${training_params.BATCH_SIZE}
+  num_workers: 4
+  sensor_idx: ${sensor_id}
+  test_bearings_names:
+  - Bearing1_3
+  - Bearing1_5
+  - Bearing1_7
+  - Bearing2_4
+  - Bearing2_6
+  - Bearing2_7
+  - Bearing3_3
+  - Bearing3_4
+  - Bearing3_5
+  - Bearing3_6
+  - Bearing3_7
+  tr_path: data/ieee-RUL/Learning_set.csv
+  train_bearings_names:
+  - Bearing1_1
+  - Bearing2_1
+  - Bearing3_1
+  - Bearing3_2
+  - Bearing2_2
+  - Bearing1_2
+  tst_path: data/ieee-RUL/Full_Test_Set.csv
+  val_bearings_names:
+  - Bearing2_3
+  - Bearing2_5
+  - Bearing1_4
+  - Bearing1_6
+  val_path: data/ieee-RUL/Full_Test_Set.csv
+denoisingAE_params:
+  apply_timeEmbedding: false
+  decoder_params:
+    activation_name: ${training_params.activation_name}
+    conv_channels:
+    - 1
+    - 2
+    - 4
+    final_conv_channels: 8
+    kernel_sizes:
+    - 3
+    - 3
+    - 3
+    out_channels: 1
+    pool_sizes:
+    - 2
+    - 2
+    - 2
+  encoder_params:
+    activation_name: ${training_params.activation_name}
+    conv_channels:
+    - 2
+    - 4
+    - 8
+    in_channels: 1
+    kernel_sizes:
+    - 3
+    - 3
+    - 3
+    pool_sizes:
+    - 2
+    - 2
+    - 2
+    seq_len: ${seq_len}
+  lr: ${training_params.denoisingAE_lr}
+  sensor_id: ${sensor_id}
+  time_embedder_params:
+    embedding_dim: ${seq_len}
+    hidden_dims:
+    - 128
+    - 256
+    output_dim: 128
+lr_scheduler_params:
+  cosine_annealing_lr_scheduler_params:
+    T_max: 250
+    eta_min: 1.0e-07
+  exponential_decay_lr_scheduler_params:
+    gamma: 0.985
+  scheduler_name: cosine_annealing_lr_scheduler
+sensor_id: 1
+seq_len: 1280
+sparseAE_params:
+  input_dim: 32
+  lr: ${training_params.sparseAE_lr}
+  momentum: 0.7
+  out_dim: 32
+  sensor_id: ${sensor_id}
+  sparse_hidden_dim: 64
+  sparsity_lambda: 0.005
+training_params:
+  BATCH_SIZE: 32
+  GRAD_ACCUMULATION_STEPS: 2
+  MAX_EPOCHS: 100
+  activation_name: leaky_relu
+  ckpt_file_name: '{epoch}-{val_HuberLoss:.3f}'
+  denoisingAE_lr: 0.0003973339953343903
+  loss_fn: MSELoss
+  model_name: DenoisingSparseAE
+  optimizer: adam
+  save_dir: results
+  sparseAE_lr: 0.00041150008413639433
+  weight_decay: 3.359306526875206e-06
