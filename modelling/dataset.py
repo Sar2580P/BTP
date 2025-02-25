@@ -7,12 +7,13 @@ import os
 
 def get_data_mapping():
     BASE_DIR = "data/ieee-RUL"
-    for dataset in ["Full_Test_Set", "Learning_set", "Test_set"]:
+    for dataset in ["Full_Test_Set", "Learning_set"]:
         df = pd.DataFrame(columns = ["full_fft_path"])
         bearing_fft_folders = glob.glob(f"{BASE_DIR}/{dataset}/Bearing*_fft")
         print(f"Found {len(bearing_fft_folders)} files in {dataset}")
         for bearing_fft_folder in bearing_fft_folders:
             files = glob.glob(f"{bearing_fft_folder}/*.npy")
+            files.sort()
             for file in files:
                 df = pd.concat([df, pd.DataFrame({"full_fft_path":[file]})])
         df.to_csv(f"{BASE_DIR}/{dataset}.csv", index=False)
@@ -44,6 +45,8 @@ class Stage_Classifier_Dataset(Dataset):
         x =  torch.tensor(np.load(full_path), dtype=torch.float32)
         y = torch.tensor(self.Y.iloc[idx])
         return x, y
+
+
 
 
 if __name__ == "__main__":

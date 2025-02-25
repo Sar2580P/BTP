@@ -23,6 +23,13 @@ matplotlib = "^3.9.2"
 torch = "^2.5.1"
 pytorch-lightning = "^2.4.0"
 wandb = "^0.18.5"
+opencv-python = "^4.11.0.86"
+scikit-image = "^0.25.1"
+pywavelets = "^1.8.0"
+torchview = "^0.2.6"
+omegaconf = "^2.3.0"
+graphviz = "^0.20.3"
+rich = "^13.9.4"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,11 +1,11 @@
 import zipfile
 import os
-import yaml
+from omegaconf import OmegaConf
 
 def read_yaml(file_path):
-    with open(file_path, 'r') as file:
-        data = yaml.safe_load(file)
-    return data
+    conf = OmegaConf.load(file_path)
+    config = OmegaConf.create(OmegaConf.to_yaml(conf, resolve=True))
+    return config
 
 def unzip_file(zip_path, extract_to):
     """
@@ -20,9 +20,10 @@ def unzip_file(zip_path, extract_to):
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
 
-# Example usage:
-unzip_file('data/ieee-phm-2012-data-challenge-dataset-master.zip', 'data/ieee-RUL')
+if __name__=="__main__":
+    # Example usage:
+    unzip_file('data/ieee-phm-2012-data-challenge-dataset-master.zip', 'data/ieee-RUL')
 
-# import pandas as pd
-# df = pd.read_csv('data/ieee-RUL/Learning_set/Bearing1_1/acc_00003.csv')
-# print(df.shape)
+    # import pandas as pd
+    # df = pd.read_csv('data/ieee-RUL/Learning_set/Bearing1_1/acc_00003.csv')
+    # print(df.shape)
