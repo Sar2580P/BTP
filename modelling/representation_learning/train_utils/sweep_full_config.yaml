@@ -110,15 +110,15 @@ sparseAE_params:
   sparse_hidden_dim: 128
   sparsity_lambda: 0.005
 training_params:
-  BATCH_SIZE: 32
+  BATCH_SIZE: 128
   GRAD_ACCUMULATION_STEPS: 2
   MAX_EPOCHS: 400
   activation_name: relu
   ckpt_file_name: '{epoch}-{val_HuberLoss:.3f}'
-  denoisingAE_lr: 0.0015608211702594996
-  loss_fn: MSELoss
+  denoisingAE_lr: 0.0007937395680956387
+  loss_fn: HuberLoss
   model_name: DenoisingSparseAE
   optimizer: adam
   save_dir: results
-  sparseAE_lr: 0.002845723294346318
-  weight_decay: 2.543438014862491e-05
+  sparseAE_lr: 0.0008767877966114975
+  weight_decay: 3.5884403552336185e-05

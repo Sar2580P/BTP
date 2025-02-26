@@ -21,7 +21,7 @@ training_params :
   activation_name : 'prelu'
   optimizer : 'adam'
   loss_fn : 'HuberLoss'
-  weight_decay : !!float 5e-5
+  weight_decay : !!float 2e-5
   GRAD_ACCUMULATION_STEPS : 2
 
 callback_params:

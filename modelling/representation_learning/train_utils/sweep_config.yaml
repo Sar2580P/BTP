@@ -9,10 +9,10 @@ parameters :
       values : [32, 64, 128]
     denoisingAE_lr :
       min: 1e-4
-      max: 2e-3
+      max: 8e-4
     sparseAE_lr :
       min: 8e-4
-      max: 5e-3
+      max: 1e-3
     activation_name :
       values : ["relu", "leaky_relu", "prelu"]
     loss_fn :

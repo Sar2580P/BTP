@@ -33,8 +33,8 @@ tr_loader, val_loader , tst_loader = get_dataloaders(tr_df_path=data_config['tr_
 early_stop_callback, checkpoint_callback, rich_progress_bar, rich_model_summary, lr_monitor = get_callbacks(config['callback_params'])
 checkpoint_callback.dirpath = os.path.join(train_config['save_dir'], 'ckpts')
 checkpoint_callback.filename = f"{model.model_name}_"+train_config['ckpt_file_name']
-
-wandb_logger = WandbLogger(project= "SensorRepresentationLearning", name = model.model_name)
+run_name = model.model_name + f"denoisedLR--{train_config['denoisingAE_lr']}__sparseLR--{train_config['sparseAE_lr']}__batchSize--{train_config['BATCH_SIZE']}__decay--{train_config['weight_decay']}"
+wandb_logger = WandbLogger(project= "SensorRepresentationLearning", name = run_name)
 csv_logger = CSVLogger(train_config['save_dir']+'/logs/'+ model.model_name)
 
 #_____________________________________________________________________________________________________________
