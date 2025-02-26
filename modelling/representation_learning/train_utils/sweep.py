@@ -7,22 +7,19 @@ from modelling.representation_learning.dataloaders import get_dataloaders
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning import Trainer
 from modelling.callbacks import get_callbacks
-import yaml 
+import yaml
 import time
 from omegaconf import OmegaConf
 
 sweep_config =read_yaml('modelling/representation_learning/train_utils/sweep_config.yaml')
 sweep_config = OmegaConf.to_container(sweep_config, resolve=True)
-
-print(sweep_config)
-print("_"*100)
 sweep_id = wandb.sweep(sweep_config, project="SensorRepresentationLearning")
 
 # Define the training function
 def train(config=None):
     with wandb.init(config=config):
         wandb_config = wandb.config
-        
+
         original_config_filepath = "modelling/representation_learning/train_utils/sweep_full_config.yaml"
 
         # ✅ First, read the existing YAML config
@@ -32,14 +29,12 @@ def train(config=None):
         original_config['training_params'].update(wandb_config)
         # print(original_config)
 
-        with open(original_config_filepath, "w") as f:  
+        with open(original_config_filepath, "w") as f:
             yaml.dump(original_config, f)
 
         time.sleep(0.05)
         config = read_yaml(original_config_filepath)
 
-        print(config)
-        
         train_config = config['training_params']
         model_config = config[train_config['model_name']+'_params']
         data_config = config['dataset_params']
@@ -51,12 +46,12 @@ def train(config=None):
         else:
             raise ValueError(f"model_name: {train_config['model_name']} not supported")
         model_obj = RepresentationLearning(model,config)
-                
-        tr_loader, val_loader , tst_loader = get_dataloaders(tr_df_path=data_config['tr_path'],  
-                                                     val_df_path=data_config['tr_path'] , 
-                                                     tst_df_path=data_config['tr_path'],
+
+        tr_loader, val_loader , tst_loader = get_dataloaders(tr_df_path=data_config['tr_path'],
+                                                     val_df_path=data_config['val_path'] ,
+                                                     tst_df_path=data_config['tst_path'],
                                                      data_config=data_config)
-        
+
         NAME = model.model_name+"_sweep"
         denoisingAE_lr, sparseAE_lr = model_config['denoisingAE_params']['lr'], model_config['sparseAE_params']['lr']
         run_name = f"denoisingAELr--{denoisingAE_lr}__sparseAELr--{sparseAE_lr}__bs--{train_config['BATCH_SIZE']}__decay-{train_config['weight_decay']}"

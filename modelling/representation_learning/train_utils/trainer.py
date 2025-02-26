@@ -24,9 +24,9 @@ else:
 model_obj = RepresentationLearning(model,config)
 
 # setting up the dataloaders
-tr_loader, val_loader , tst_loader = get_dataloaders(tr_df_path=data_config['tr_path'],  
-                                                     val_df_path=data_config['tr_path'] , 
-                                                     tst_df_path=data_config['tr_path'],
+tr_loader, val_loader , tst_loader = get_dataloaders(tr_df_path=data_config['tr_path'],
+                                                     val_df_path=data_config['val_path'] ,
+                                                     tst_df_path=data_config['tst_path'],
                                                      data_config=data_config)
 
 #_____________________________________________________________________________________________________________
@@ -40,7 +40,7 @@ csv_logger = CSVLogger(train_config['save_dir']+'/logs/'+ model.model_name)
 #_____________________________________________________________________________________________________________
 torch.cuda.empty_cache()
 trainer = Trainer(callbacks=[early_stop_callback, checkpoint_callback, rich_progress_bar, rich_model_summary, lr_monitor],
-                accelerator = 'cpu' ,max_epochs=train_config['MAX_EPOCHS'], logger=[wandb_logger, csv_logger] ,
+                accelerator = 'gpu' ,max_epochs=train_config['MAX_EPOCHS'], logger=[wandb_logger, csv_logger] ,
                 accumulate_grad_batches=train_config['GRAD_ACCUMULATION_STEPS'])
 
 trainer.fit(model=model_obj  , train_dataloaders=tr_loader,
