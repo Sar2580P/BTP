@@ -25,16 +25,18 @@ class RepresentationLearning(pl.LightningModule):
         if "SparseAutoencoder" in self.model_name:
             decoded_output , kl_loss = self.model(batch, is_train_mode = 1)
             self.log("train_kl_loss", kl_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
-            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(self.current_epoch)*kl_loss
+            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(kl_loss)
         elif "SensorFeatureFusion" in self.model_name:
             decoded_output = self.model(batch)
             loss = self.criterion(decoded_output, batch)
-        elif "denoisingAE" in self.model_name:
+        elif "DenoisingSparseAE" in self.model_name:
             x, t = batch
             decoded_output, sparsity_loss = self.model.forward(x, t , self.current_epoch, self.MAX_EPOCHS , is_train_mode = 1)
-            loss = self.criterion(decoded_output, x) + (sparsity_loss*self.kl_scheduler(self.current_epoch) if sparsity_loss is not None else 0)
+            recon_loss = self.criterion(decoded_output, x)
+            loss = recon_loss + (self.kl_scheduler(sparsity_loss) if sparsity_loss is not None else 0)
             if sparsity_loss is not None : 
                 self.log("train_sparsity_loss", sparsity_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
+            self.log("train_recon_loss", recon_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
     
         self.log(f"train_{self.loss_fn_name}", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
         return loss
@@ -43,17 +45,18 @@ class RepresentationLearning(pl.LightningModule):
         if "SparseAutoencoder" in self.model_name:
             decoded_output , kl_loss = self.model(batch, is_train_mode = 0)
             self.log("val_kl_loss", kl_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
-            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(self.current_epoch)*kl_loss
+            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(kl_loss)
         elif "SensorFeatureFusion" in self.model_name:
             decoded_output = self.model(batch)
             loss = self.criterion(decoded_output, batch)
-        elif "denoisingAE" in self.model_name:
+        elif "DenoisingSparseAE" in self.model_name:
             x, t = batch
             decoded_output, sparsity_loss = self.model.forward(x, t , self.current_epoch, self.MAX_EPOCHS , is_train_mode = 0)
-            loss = self.criterion(decoded_output, x) + (sparsity_loss*self.kl_scheduler(self.current_epoch) if sparsity_loss is not None else 0)
+            recon_loss = self.criterion(decoded_output, x)
+            loss = recon_loss + (self.kl_scheduler(sparsity_loss) if sparsity_loss is not None else 0)
             if sparsity_loss is not None : 
                 self.log("val_sparsity_loss", sparsity_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
-    
+            self.log("val_recon_loss", recon_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
         self.log(f"val_{self.loss_fn_name}", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
         return loss
 
@@ -61,18 +64,19 @@ class RepresentationLearning(pl.LightningModule):
         if "SparseAutoencoder" in self.model_name:
             decoded_output , kl_loss = self.model(batch, is_train_mode = 0)
             self.log("test_kl_loss", kl_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
-            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(self.current_epoch)*kl_loss
+            loss = self.criterion(decoded_output, batch) + self.kl_scheduler(kl_loss)
         elif "SensorFeatureFusion" in self.model_name:
             decoded_output = self.model(batch)
             loss = self.criterion(decoded_output, batch)
-        elif "denoisingAE" in self.model_name:
+        elif "DenoisingSparseAE" in self.model_name:
             x, t = batch
             decoded_output, sparsity_loss = self.model.forward(x, t , self.current_epoch, self.MAX_EPOCHS , is_train_mode = 0)
-            loss = self.criterion(decoded_output, x) + (sparsity_loss*self.kl_scheduler(self.current_epoch) \
+            recon_loss = self.criterion(decoded_output, x)
+            loss = recon_loss + (self.kl_scheduler(sparsity_loss) \
                                                         if sparsity_loss is not None else 0)
             if sparsity_loss is not None : 
                 self.log("tst_sparsity_loss", sparsity_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
-    
+            self.log("tst_recon_loss", recon_loss, on_epoch=True, on_step=False, prog_bar=True, logger=True)
         self.log(f"tst_{self.loss_fn_name}", loss, on_epoch=True, on_step=False,prog_bar=True, logger=True)
         return loss
 
@@ -95,5 +99,5 @@ class RepresentationLearning(pl.LightningModule):
                           'name': scheduler_name}]
 
         
-    def kl_scheduler(self, epoch):
-        return 1.0
+    def kl_scheduler(self, loss):
+        return 0.5 * loss

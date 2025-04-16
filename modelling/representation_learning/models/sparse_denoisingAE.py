@@ -9,7 +9,7 @@ from modelling.representation_learning.models.modules import (DenoisingEncoder,
                                                         SparseDecoder, 
                                                         plot_model
                                                         )
-from modelling.representation_learning.models.time_embedder import TimeEmbeddingModel
+from modelling.representation_learning.models.time_embedder import TimeEmbedding
 
 class DenoisingAE(nn.Module):
     def __init__(self, config):
@@ -18,10 +18,10 @@ class DenoisingAE(nn.Module):
         self.encoder = DenoisingEncoder(**config['encoder_params'])
         self.decoder = DenoisingDecoder(**config['decoder_params'])
         if config['apply_timeEmbedding']: 
-            self.time_embedder = TimeEmbeddingModel(**config['time_embedder_params'])
+            self.time_embedder = TimeEmbedding(**config['time_embedder_params'])
         else : 
             self.time_embedder = None
-        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_id']}"
+        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_name']}"
         
     def forward(self, x:torch.Tensor, time_stamp:torch.Tensor):
         latent, encoder_outputs = self.forward_encoder(x, time_stamp)
@@ -31,7 +31,8 @@ class DenoisingAE(nn.Module):
     def forward_encoder(self, x:torch.Tensor, time_stamp:torch.Tensor):
         if self.time_embedder is None:
             return self.encoder(x)
-        time_embedding = self.time_embedder(time_stamp)
+        time_embedding = self.time_embedder(time_stamp).unsqueeze(1)
+        print(f"Time embedding shape: {time_embedding.shape}, x shape: {x.shape} ----------<<<<<<<>>>>>>>>>>>")
         return self.encoder(torch.add(x, time_embedding))
     
     def forward_decoder(self, x:torch.Tensor, encoder_outputs:List[torch.Tensor]):
@@ -74,12 +75,11 @@ class SparseAE(nn.Module):
             num_layers=1
         )
         
-        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_id']}"
+        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_name']}"
         self.config = config
     
     def forward(self, x:torch.Tensor, is_train_mode):
         """Forward pass through the autoencoder."""
-        # print(x[0] , x[1], "***************")
         B, C, L = x.size()
         # convert to shape: (B, C, L) --> (B*c, L)
         x = x.view(B*C, L)
@@ -143,7 +143,7 @@ class DenoisingSparseAE(nn.Module):
         self.layer_lr = [{'params' : self.denoisingAE.parameters(), 'lr' : config['denoisingAE_params']['lr']},
                          {'params': self.sparseAE.parameters(), 'lr': config['sparseAE_params']['lr']}]
         
-        self.model_name: str = f"{self.__class__.__name__}_sensor-{config['sensor_id']}"
+        self.model_name: str = f"{self.__class__.__name__}_sensor-{config['sensor_name']}"
         self.config = config
 
     def forward_denoise(self, x: torch.Tensor, time_stamp: torch.Tensor) -> Tuple[torch.Tensor, 
@@ -167,7 +167,7 @@ class DenoisingSparseAE(nn.Module):
     
     
 
-    def forward(self, x: torch.Tensor, time_stamp: torch.Tensor = 0, 
+    def forward(self, x: torch.Tensor, time_stamp: torch.Tensor = None, 
                 curr_epoch=0 , total_epoch=10, is_train_mode=0) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         """
         Main forward method.
@@ -184,7 +184,7 @@ class DenoisingSparseAE(nn.Module):
               - Sparsity loss if in "sparse" mode; otherwise None.
         """
         self.train_sparseAE_flag = self.should_train_sparseAE(curr_epoch, total_epoch)
-        if is_train_mode:
+        if is_train_mode==1:
             if self.train_sparseAE_flag:
                 # freeze denoisingAE
                 if not self.is_denoisingAE_frozen:
@@ -208,9 +208,9 @@ class DenoisingSparseAE(nn.Module):
                 return self.forward_denoise(x, time_stamp), None
             else:
                 denoised_latent , encoded_outputs = self.denoisingAE.forward_encoder(x, time_stamp)
-                sparseAE_reconstruction, _ = self.forward_sparse(denoised_latent, is_train_mode=is_train_mode)
+                sparseAE_reconstruction, sparsity_loss = self.forward_sparse(denoised_latent, is_train_mode=is_train_mode)
                 denoisingAE_reconstruction = self.denoisingAE.forward_decoder(sparseAE_reconstruction, encoder_outputs=encoded_outputs)
-                return denoisingAE_reconstruction, None
+                return denoisingAE_reconstruction, sparsity_loss
         
     def forward_encoder(self, x: torch.Tensor, time_stamp: torch.Tensor) -> torch.Tensor:
         latent = self.denoisingAE.forward_encoder(x, time_stamp)
@@ -221,20 +221,20 @@ class DenoisingSparseAE(nn.Module):
         return self.denoisingAE.forward_encoder(x, time_stamp)
         
     def should_train_sparseAE(self, curr_epoch, total_epoch):
-        return curr_epoch > total_epoch // 2  # some scheduling for training sparseAE
+        return curr_epoch > total_epoch*(2/3)  # some scheduling for training sparseAE
         # return True
             
             
-# if __name__=="__main__":
-#     print(1)
-#     config = read_yaml("modelling/representation_learning/config.yaml")
-#     print(config)
-#     input = torch.randn(1,1,256)
-#     time_stamp = torch.randn(1,1)
-#     print(2, "____________________________________")
-#     model = DenoisingSparseAE(config['DenoisingSparseAE_params'])
-#     print(3, "____________________________________")
-#     plot_model(config=config, model=model, input_size = (8,1,256), savefile_name="FullSparseDenoisingAE.png")
-#     y, _ = model.forward(input,time_stamp, 0, 10 ,is_train_mode=0)
-#     print(4, "____________________________________")
-#     print(y)
+if __name__=="__main__":
+    print(1)
+    config = read_yaml("modelling/representation_learning/config.yaml")
+    print(config)
+    input = torch.randn(1,1,256, device="cpu")
+    time_stamp = torch.randn(1,1, device="cpu")
+    print(2, "____________________________________")
+    model = DenoisingSparseAE(config['DenoisingSparseAE_params']).to("cpu")
+    print(3, "____________________________________")
+    plot_model(config=config, model=model, input_size = (8,1,256), savefile_name="FullSparseDenoisingAE")
+    y, _ = model.forward(input,time_stamp, 0, 10 ,is_train_mode=0)
+    print(4, "____________________________________")
+    print(y)

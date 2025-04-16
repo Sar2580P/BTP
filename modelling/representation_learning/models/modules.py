@@ -125,7 +125,7 @@ class DenoisingEncoder(nn.Module):
               - List of feature maps from each conv block for skip connections.
         """
         skip_connections: List[torch.Tensor] = []
-        latent = x
+        latent=x
         for i,  layer in enumerate(self.conv_layers):
             latent = layer(latent)
             skip_connections.append(latent)  
@@ -219,7 +219,7 @@ class DenoisingDecoder(nn.Module):
                 try:
                     latent = torch.add(latent, encoder_outputs[n-i-1])
                 except: 
-                    print(f"Failed to add skip conn, decoder-{i+1}/{len(self.deconv_layers)}, latent shape: {latent.shape}, skip shape: {encoder_outputs[n-i-1].shape}")
+                    raise ValueError(f"Failed to add skip conn, decoder-{i+1}/{len(self.deconv_layers)}, latent shape: {latent.shape}, skip shape: {encoder_outputs[n-i-1].shape}")
             latent = layer(latent)
         return latent
         

@@ -43,7 +43,7 @@ class SparseAutoencoder(nn.Module):
             nn.Linear(config['hidden_dim'], config['input_dim'])
         )
         assert config['model_name']=="SparseAutoencoder", f"Model name must be {self.__class__.__name__}, but got {config['model_name']}"
-        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_id']}"
+        self.model_name = f"{self.__class__.__name__}_sensor-{config['sensor_name']}"
         self.config = config
     
     def forward(self, x:torch.Tensor, is_train_mode):
@@ -99,7 +99,7 @@ class SensorFeatureFusion(nn.Module):
         self.channels = config['channels']
         self.config = config
         
-        self.base_autoencoders = self.get_base_autoencoders(config['sensor_id_list'])
+        self.base_autoencoders = self.get_base_autoencoders(config['sensor_name_list'])
         self.model_name = f"{self.__class__.__name__}"
 
         # Encoder
@@ -140,15 +140,15 @@ class SensorFeatureFusion(nn.Module):
 
             nn.ConvTranspose1d(32, self.channels, kernel_size=3, stride=2, padding=1, output_padding=1)
         )
-    def get_base_autoencoders(self, sensor_id_list:list):
+    def get_base_autoencoders(self, sensor_name_list:list):
         # TODO : debug this function
         base_autoencoders = nn.ModuleList()
         BASE_DIR = "results/autoencoders/"
-        for sensor_id in sensor_id_list:
-            ckpt_file_path = glob.glob(os.path.join(BASE_DIR, f"SparseAutoencoder_sensor-{sensor_id}*.pt"))[0]
+        for sensor_name in sensor_name_list:
+            ckpt_file_path = glob.glob(os.path.join(BASE_DIR, f"SparseAutoencoder_sensor-{sensor_name}*.pt"))[0]
             ckpt = torch.load(ckpt_file_path)
             sparse_model_config = ckpt['state_dict']['config']
-            model = SparseAutoencoder(sparse_model_config, sensor_id)  # getting model config from ckpt stored....
+            model = SparseAutoencoder(sparse_model_config, sensor_name)  # getting model config from ckpt stored....
             model.load_state_dict(ckpt['state_dict']['model'])
             base_autoencoders.append(model.encoder)
             
@@ -183,7 +183,7 @@ if __name__=="__main__":
         "norm_type": "batchnorm",
         "activation": "relu",
         "model_name" : "SparseAutoencoder",
-        "sensor_id" : 1
+        "sensor_name" : 1
     }
     model = SparseAutoencoder(config=config)
     

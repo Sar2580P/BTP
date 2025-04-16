@@ -1,6 +1,6 @@
 DenoisingSparseAE_params:
   denoisingAE_params: ${denoisingAE_params}
-  sensor_id: ${sensor_id}
+  sensor_name: ${sensor_name}
   sparseAE_params: ${sparseAE_params}
 callback_params:
   EarlyStopping:
@@ -16,7 +16,7 @@ callback_params:
 dataset_params:
   BATCH_SIZE: ${training_params.BATCH_SIZE}
   num_workers: 4
-  sensor_idx: ${sensor_id}
+  sensor_namex: ${sensor_name}
   test_bearings_names:
   - Bearing1_3
   - Bearing1_5
@@ -79,7 +79,7 @@ denoisingAE_params:
     - 2
     seq_len: ${seq_len}
   lr: ${training_params.denoisingAE_lr}
-  sensor_id: ${sensor_id}
+  sensor_name: ${sensor_name}
   time_embedder_params:
     embedding_dim: ${seq_len}
     hidden_dims:
@@ -93,14 +93,14 @@ lr_scheduler_params:
   exponential_decay_lr_scheduler_params:
     gamma: 0.985
   scheduler_name: cosine_annealing_lr_scheduler
-sensor_id: 1
+sensor_name: 1
 seq_len: 1280
 sparseAE_params:
   input_dim: 32
   lr: ${training_params.sparseAE_lr}
   momentum: 0.7
   out_dim: 32
-  sensor_id: ${sensor_id}
+  sensor_name: ${sensor_name}
   sparse_hidden_dim: 64
   sparsity_lambda: 0.005
 training_params:
