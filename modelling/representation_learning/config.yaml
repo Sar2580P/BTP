@@ -1,5 +1,5 @@
-# SparseAutoencoder_params : 
-#   model_params: 
+# SparseAutoencoder_params :
+#   model_params:
 #     input_dim : 1280
 #     hidden_dims : [768, 1024]
 #     sparsity_lambda : 0.005
@@ -10,7 +10,7 @@
 #     sensor_name : 1
 #     model_name : 'SparseAutoencoder'
 
-training_params : 
+training_params :
   model_name : 'DenoisingSparseAE'
   save_dir : 'results'
   ckpt_file_name : '{epoch}-{val_HuberLoss:.3f}'
@@ -21,11 +21,11 @@ training_params :
   activation_name : 'prelu'
   optimizer : 'adam'
   loss_fn : 'HuberLoss'
-  weight_decay : !!float 1e-5
+  weight_decay : !!float 2e-5
   GRAD_ACCUMULATION_STEPS : 2
   accelerator: 'cpu'
 
-callback_params: 
+callback_params:
   ModelCheckpoint:
     monitor: 'val_HuberLoss'
     mode: 'min'
@@ -37,10 +37,10 @@ callback_params:
     min_delta : 0.00005
     patience : 8
 
-lr_scheduler_params : 
-  scheduler_name: 'cosine_annealing_lr_scheduler'
+lr_scheduler_params :
+  scheduler_name: 'exponential_decay_lr_scheduler'
   exponential_decay_lr_scheduler_params:
-    gamma: 0.985
+    gamma: 0.99
 
   cosine_annealing_lr_scheduler_params:
     T_max: 250
@@ -66,7 +66,7 @@ denoisingAE_params :
   lr : ${training_params.denoisingAE_lr}
   apply_timeEmbedding : True
 
-  time_embedder_params : 
+  time_embedder_params :
     embedding_dim : ${seq_len}
 
   
@@ -97,8 +97,8 @@ sparseAE_params :
 DenoisingSparseAE_params : 
   sensor_name : ${sensor_name}
   denoisingAE_params : ${denoisingAE_params}
-  sparseAE_params : ${sparseAE_params}  
+  sparseAE_params : ${sparseAE_params}
 
-  
+
 
 

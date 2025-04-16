@@ -3,3 +3,4 @@ resources
 results
 wandb
 __pycache__/
+DenoisingSparseAE_sensor-1_sweep

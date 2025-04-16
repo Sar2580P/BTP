@@ -29,7 +29,7 @@ dataset_params:
   - Bearing3_5
   - Bearing3_6
   - Bearing3_7
-  tr_path: data/ieee-RUL/Learning_set.csv
+  tr_path: data/ieee-RUL/Learning_set_fft_filepaths.csv
   train_bearings_names:
   - Bearing1_1
   - Bearing2_1
@@ -37,23 +37,25 @@ dataset_params:
   - Bearing3_2
   - Bearing2_2
   - Bearing1_2
-  tst_path: data/ieee-RUL/Full_Test_Set.csv
+  tst_path: data/ieee-RUL/Test_set_fft_filepaths.csv
   val_bearings_names:
   - Bearing2_3
   - Bearing2_5
   - Bearing1_4
   - Bearing1_6
-  val_path: data/ieee-RUL/Full_Test_Set.csv
+  val_path: data/ieee-RUL/Full_Test_Set_fft_filepaths.csv
 denoisingAE_params:
   apply_timeEmbedding: false
   decoder_params:
     activation_name: ${training_params.activation_name}
     conv_channels:
     - 1
-    - 2
-    - 4
-    final_conv_channels: 8
+    - 32
+    - 64
+    - 128
+    final_conv_channels: 256
     kernel_sizes:
+    - 3
     - 3
     - 3
     - 3
@@ -62,18 +64,22 @@ denoisingAE_params:
     - 2
     - 2
     - 2
+    - 2
   encoder_params:
     activation_name: ${training_params.activation_name}
     conv_channels:
-    - 2
-    - 4
-    - 8
+    - 32
+    - 64
+    - 128
+    - 256
     in_channels: 1
     kernel_sizes:
     - 3
     - 3
     - 3
+    - 3
     pool_sizes:
+    - 2
     - 2
     - 2
     - 2
@@ -96,7 +102,7 @@ lr_scheduler_params:
 sensor_name: 1
 seq_len: 1280
 sparseAE_params:
-  input_dim: 32
+  input_dim: 80
   lr: ${training_params.sparseAE_lr}
   momentum: 0.7
   out_dim: 32
@@ -104,15 +110,15 @@ sparseAE_params:
   sparse_hidden_dim: 64
   sparsity_lambda: 0.005
 training_params:
-  BATCH_SIZE: 32
+  BATCH_SIZE: 128
   GRAD_ACCUMULATION_STEPS: 2
-  MAX_EPOCHS: 100
-  activation_name: leaky_relu
+  MAX_EPOCHS: 400
+  activation_name: relu
   ckpt_file_name: '{epoch}-{val_HuberLoss:.3f}'
-  denoisingAE_lr: 0.0003973339953343903
-  loss_fn: MSELoss
+  denoisingAE_lr: 0.0007937395680956387
+  loss_fn: HuberLoss
   model_name: DenoisingSparseAE
   optimizer: adam
   save_dir: results
-  sparseAE_lr: 0.00041150008413639433
-  weight_decay: 3.359306526875206e-06
+  sparseAE_lr: 0.0008767877966114975
+  weight_decay: 3.5884403552336185e-05
